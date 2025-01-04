@@ -3,6 +3,7 @@ import dappIcon from "./assets/dapp-icon.svg"
 import { AddInstitution } from "./components/AddInstitution";
 import { GetInstitution } from "./components/GetInstitution";
 import { AddCourse } from "./components/AddCourse";
+import { AddDiscipline } from "./components/AddDiscipline";
 
 export function App() {
     const [activeSection, setActiveSection] = useState("");
@@ -41,6 +42,11 @@ export function App() {
                 <AddCourse setStatusMessage={setStatusMessage} />
             </section>
         ),
+        discipline: (
+            <section className="content-area">
+                <AddDiscipline setStatusMessage={setStatusMessage} />
+            </section>
+        ),
     };
 
     return (
@@ -60,6 +66,11 @@ export function App() {
                         <li>
                             <a href="#" onClick={() => handleMenuClick("course")}>
                                 Course
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onClick={() => handleMenuClick("discipline")}>
+                                Discipline
                             </a>
                         </li>
                     </ul>
