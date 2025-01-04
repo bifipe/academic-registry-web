@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import dappIcon from "./assets/dapp-icon.svg"
 import { AddInstitution } from "./components/AddInstitution";
 import { GetInstitution } from "./components/GetInstitution";
+import { AddCourse } from "./components/AddCourse";
 
 export function App() {
-    const [isInstitutionVisible, setInstitutionVisible] = useState(false);
+    const [activeSection, setActiveSection] = useState("");
     const [account, setAccount] = useState(null);
     const [statusMessage, setStatusMessage] = useState("");
+
+    const handleMenuClick = (section) => {
+        setActiveSection(section);
+    };
 
     const connectWallet = async () => {
         if (!window.ethereum) {
@@ -24,12 +29,18 @@ export function App() {
         }
     };
 
-    const handleMenuClick = (section) => {
-        if (section === "institution") {
-            setInstitutionVisible(true);
-        } else {
-            setInstitutionVisible(false);
-        }
+    const sections = {
+        institution: (
+            <section className="content-area">
+                <AddInstitution setStatusMessage={setStatusMessage} />
+                <GetInstitution setStatusMessage={setStatusMessage} />
+            </section>
+        ),
+        course: (
+            <section className="content-area">
+                <AddCourse setStatusMessage={setStatusMessage} />
+            </section>
+        ),
     };
 
     return (
@@ -63,12 +74,7 @@ export function App() {
                         </button>
                     </div>
                 </header>
-                {isInstitutionVisible && (
-                    <section className="content-area">
-                        <AddInstitution setStatusMessage={setStatusMessage} />
-                        <GetInstitution setStatusMessage={setStatusMessage} />
-                    </section>
-                )}
+                {sections[activeSection]}
             </main>
         </div>
     );
