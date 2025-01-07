@@ -5,6 +5,7 @@ import { GetInstitution } from "./components/GetInstitution";
 import { AddCourse } from "./components/AddCourse";
 import { AddDiscipline } from "./components/AddDiscipline";
 import { AddStudent } from "./components/AddStudent";
+import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDiscipline";
 import { AddGrade } from "./components/AddGrade";
 
 export function App() {
@@ -57,6 +58,7 @@ export function App() {
         student: (
             <section className="content-area">
                 <AddStudent setStatusMessage={setStatusMessage} />
+                <EnrollStudentInDiscipline setStatusMessage={setStatusMessage} />
             </section>
         ),
         grade: (
