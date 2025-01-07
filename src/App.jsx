@@ -5,6 +5,7 @@ import { GetInstitution } from "./components/GetInstitution";
 import { AddCourse } from "./components/AddCourse";
 import { AddDiscipline } from "./components/AddDiscipline";
 import { AddStudent } from "./components/AddStudent";
+import { AddGrade } from "./components/AddGrade";
 
 export function App() {
     const [activeSection, setActiveSection] = useState("");
@@ -58,6 +59,11 @@ export function App() {
                 <AddStudent setStatusMessage={setStatusMessage} />
             </section>
         ),
+        grade: (
+            <section className="content-area">
+                <AddGrade setStatusMessage={setStatusMessage} />
+            </section>
+        ),
     };
 
     return (
@@ -87,6 +93,11 @@ export function App() {
                         <li>
                             <a href="#" onClick={() => handleMenuClick("student")}>
                                 Student
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onClick={() => handleMenuClick("grade")}>
+                                Grade
                             </a>
                         </li>
                     </ul>
