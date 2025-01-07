@@ -12,6 +12,11 @@ export function App() {
 
     const handleMenuClick = (section) => {
         setActiveSection(section);
+
+        const contentArea = document.querySelector(".content-area");
+        if (contentArea) {
+            contentArea.scrollTop = 0;
+        }
     };
 
     const connectWallet = async () => {
