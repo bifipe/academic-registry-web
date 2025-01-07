@@ -5,6 +5,7 @@ import { GetInstitution } from "./components/GetInstitution";
 import { AddCourse } from "./components/AddCourse";
 import { AddDiscipline } from "./components/AddDiscipline";
 import { AddStudent } from "./components/AddStudent";
+import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDiscipline";
 
 export function App() {
     const [activeSection, setActiveSection] = useState("");
@@ -56,6 +57,7 @@ export function App() {
         student: (
             <section className="content-area">
                 <AddStudent setStatusMessage={setStatusMessage} />
+                <EnrollStudentInDiscipline setStatusMessage={setStatusMessage} />
             </section>
         ),
     };
