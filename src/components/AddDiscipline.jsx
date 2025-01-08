@@ -18,7 +18,7 @@ export function AddDiscipline({ setStatusMessage }) {
 
         try {
             const contract = await connectToContract();
-            const tx = await contract.addCourse(
+            const tx = await contract.addDisciplineToCourse(
                 institutionAddress,
                 courseCode,
                 disciplineCode,

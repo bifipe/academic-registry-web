@@ -6,10 +6,6 @@ export function GetGrade({ setStatusMessage }) {
     const [queriedStudentGrades, setQueriedStudentGrades] = useState(null);
 
     const getGrade = async () => {
-        setQueriedGrade({
-            name: "",
-            document: "",
-        });
 
         if (!queryStudentAddress) {
             setStatusMessage("Please fill in all fields.");
@@ -22,7 +18,7 @@ export function GetGrade({ setStatusMessage }) {
 
             let grades = [];
 
-            studentGrades.array.forEach(grade => {
+            studentGrades.forEach(grade => {
                 const queriedGrade = {
                     disciplineCode: grade.disciplineCode,
                     period: grade.period,
@@ -59,13 +55,13 @@ export function GetGrade({ setStatusMessage }) {
                 <div>
                     <h3>Grades Details</h3>
                     <div>
-                        {grades.map((grade, index) => (
-                            <div>
-                                <p key={index}>Discipline Code: {grade.disciplineCode}</p>
-                                <p key={index}>Period {grade.period}</p>
-                                <p key={index}>Media {grade.media}</p>
-                                <p key={index}>Attendance {grade.attendance}</p>
-                                <p key={index}>Status {grade.status}</p>
+                        {queriedStudentGrades.map((grade, index) => (
+                            <div key={index}>
+                                <p key={"disciplineCode" + index}>Discipline Code: {grade.disciplineCode}</p>
+                                <p key={"period" + index}>Period: {grade.period.toString()}</p>
+                                <p key={"media" + index}>Media: {grade.media.toString()}</p>
+                                <p key={"attendance" + index}>Attendance: {grade.attendance.toString()}</p>
+                                <p key={"status" + index}>Status: {grade.status.toString()}</p>
                             </div>
                         ))}
                     </div>

@@ -33,7 +33,7 @@ export function AddGrade({ setStatusMessage }) {
             setStatusMessage("Grade added successfully!");
 
             setInstitutionAddress("");
-            setGradeAddress("");
+            setStudentAddress("");
             setDisciplineCode("");
             setPeriod("");
             setMedia("");
