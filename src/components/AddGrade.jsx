@@ -25,7 +25,7 @@ export function AddGrade({ setStatusMessage }) {
                 period,
                 media,
                 attendance,
-                status
+                JSON.parse(status)
             );
 
             setStatusMessage("Transaction submitted, waiting for confirmation...");
