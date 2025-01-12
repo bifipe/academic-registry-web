@@ -8,6 +8,7 @@ import { AddStudent } from "./components/AddStudent";
 import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDiscipline";
 import { AddGrade } from "./components/AddGrade";
 import { GetGrade } from "./components/GetGrade";
+import { AddAllowedAddress } from "./components/AddAllowedAddres";
 
 export function App() {
     const [activeSection, setActiveSection] = useState("");
@@ -68,6 +69,11 @@ export function App() {
                 <GetGrade setStatusMessage={setStatusMessage} />
             </section>
         ),
+        permission: (
+            <section className="content-area">
+                <AddAllowedAddress setStatusMessage={setStatusMessage} />
+            </section>
+        )
     };
 
     return (
@@ -102,6 +108,11 @@ export function App() {
                         <li>
                             <a href="#" onClick={() => handleMenuClick("grade")}>
                                 Grade
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onClick={() => handleMenuClick("permission")}>
+                                Permission
                             </a>
                         </li>
                     </ul>
