@@ -144,3 +144,63 @@ h2 {
 .form button:hover {
     background-color: #e0e0e0;
 }
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #242424;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #121212;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+}
+
+thead {
+    background-color: #242424;
+    border-bottom: 2px solid #fff;
+}
+
+thead tr th {
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+    color: #fff;
+    border-bottom: 1px solid #424242;
+    font-size: 14px;
+}
+
+tbody tr {
+    transition: background-color 0.2s;
+}
+
+tbody tr:hover {
+    background-color: #1a1a1a;
+}
+
+tbody tr td {
+    padding: 12px;
+    color: #b3b3b3;
+    font-size: 13px;
+}
+
+tbody tr td:last-child {
+    border-bottom: none;
+}
+
+tbody tr.subheader td {
+    font-weight: bold;
+    text-align: left;
+    background-color: #242424;
+    color: #fff;
+    font-size: 13px;
+}
+
+/* th.media, th.attendance {
+    text-align: right;
+}
+
+td.media, td.attendance {
+    text-align: right;
+} */

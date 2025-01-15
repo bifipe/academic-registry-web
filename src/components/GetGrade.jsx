@@ -6,7 +6,6 @@ export function GetGrade({ setStatusMessage }) {
     const [queriedStudentGrades, setQueriedStudentGrades] = useState(null);
 
     const getGrade = async () => {
-
         if (!queryStudentAddress) {
             setStatusMessage("Please fill in all fields.");
             return;
@@ -16,24 +15,29 @@ export function GetGrade({ setStatusMessage }) {
             const contract = await connectToContract();
             const studentGrades = await contract.getGrades(queryStudentAddress);
 
-            let grades = [];
-
-            studentGrades.forEach(grade => {
-                const queriedGrade = {
-                    disciplineCode: grade.disciplineCode,
-                    period: grade.period,
-                    media: grade.media,
-                    attendance: grade.attendance,
-                    status: grade.status
-                };
-                grades.push(queriedGrade);
-            });
+            const grades = studentGrades.map((grade) => ({
+                disciplineCode: grade.disciplineCode,
+                period: grade.period,
+                media: grade.media,
+                attendance: grade.attendance,
+                status: grade.status,
+            }));
 
             setQueriedStudentGrades(grades);
         } catch (error) {
             console.error("Error fetching grades:", error);
             setStatusMessage("Failed to fetch grades details.");
         }
+    };
+
+    const groupGradesByPeriod = (grades) => {
+        return grades.reduce((groups, grade) => {
+            if (!groups[grade.period]) {
+                groups[grade.period] = [];
+            }
+            groups[grade.period].push(grade);
+            return groups;
+        }, {});
     };
 
     return (
@@ -49,22 +53,42 @@ export function GetGrade({ setStatusMessage }) {
                         setStatusMessage("");
                     }}
                 />
-                <button type="button" onClick={getGrade}>Get Grades</button>
+                <button type="button" onClick={getGrade}>
+                    Get Grades
+                </button>
             </form>
             {queriedStudentGrades && (
                 <div>
                     <h3>Grades Details</h3>
-                    <div>
-                        {queriedStudentGrades.map((grade, index) => (
-                            <div key={index}>
-                                <p key={"disciplineCode" + index}>Discipline Code: {grade.disciplineCode}</p>
-                                <p key={"period" + index}>Period: {grade.period.toString()}</p>
-                                <p key={"media" + index}>Media: {grade.media.toString()}</p>
-                                <p key={"attendance" + index}>Attendance: {grade.attendance.toString()}</p>
-                                <p key={"status" + index}>Status: {grade.status.toString()}</p>
-                            </div>
-                        ))}
-                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Discipline Code</th>
+                                <th className="media">Media</th>
+                                <th className="attendance">Attendance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.entries(groupGradesByPeriod(queriedStudentGrades)).map(
+                                ([period, grades]) => (
+                                    <React.Fragment key={period}>
+                                        <tr className="subheader">
+                                            <td colSpan={4}>Period {period}</td>
+                                        </tr>
+                                        {grades.map((grade) => (
+                                            <tr key={grade.disciplineCode}>
+                                                <td>{grade.disciplineCode}</td>
+                                                <td className="media">{grade.media.toString()}</td>
+                                                <td className="attendance">{grade.attendance.toString()}</td>
+                                                <td>{grade.status.toString()}</td>
+                                            </tr>
+                                        ))}
+                                    </React.Fragment>
+                                )
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             )}
         </div>
