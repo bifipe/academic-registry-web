@@ -9,6 +9,7 @@ import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDisciplin
 import { AddGrade } from "./components/AddGrade";
 import { GetGrade } from "./components/GetGrade";
 import { AddAllowedAddress } from "./components/AddAllowedAddres";
+import { TestEncryption } from "./components/TestEncrpytion";
 
 export function App() {
     const [activeSection, setActiveSection] = useState("");
@@ -72,6 +73,7 @@ export function App() {
         permission: (
             <section className="content-area">
                 <AddAllowedAddress setStatusMessage={setStatusMessage} />
+                <TestEncryption setStatusMessage={setStatusMessage} />
             </section>
         )
     };
