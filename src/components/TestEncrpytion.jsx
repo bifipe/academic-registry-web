@@ -1,21 +1,38 @@
 import React, { useState } from "react";
 import { encryptMessage, decryptMessage } from "../service/EncryptionService";
+import { ethers } from "ethers";
+import { recoverPublicKey } from "@ethersproject/signing-key";
 
 export function TestEncryption({ setStatusMessage }) {
-    const [publicKey, setPublicKey] = useState("");
     const [privateKey, setPrivateKey] = useState("");
-    const [data, setData] = useState("");
+    const [name, setName] = useState("");
+    const [document, setDocument] = useState("");
 
     const testEncryption = async () => {
 
-        if (!publicKey || !data) {
+        if (!privateKey || !name || !document) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
 
         try {
 
-            const encryptedData = await encryptMessage(publicKey, data);
+            const personalInformation = {
+                name: name,
+                document: document
+            };
+
+            const message = "Do you allow the system to register your personal information?";
+
+            const messageHash = ethers.hashMessage(message);
+
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const signature = await signer.signMessage(message);
+            
+            const publicKey = recoverPublicKey(messageHash, signature);
+
+            const encryptedData = await encryptMessage(publicKey.slice(2), JSON.stringify(personalInformation));
 
             console.log(JSON.stringify(encryptedData));
 
@@ -35,15 +52,6 @@ export function TestEncryption({ setStatusMessage }) {
             <form className="form">
                 <input
                     type="text"
-                    placeholder="Public Key"
-                    value={publicKey}
-                    onChange={(e) => {
-                        setPublicKey(e.target.value);
-                        setStatusMessage("");
-                    }}
-                />
-                <input
-                    type="text"
                     placeholder="Private Key"
                     value={privateKey}
                     onChange={(e) => {
@@ -53,10 +61,19 @@ export function TestEncryption({ setStatusMessage }) {
                 />
                 <input
                     type="text"
-                    placeholder="Data"
-                    value={data}
+                    placeholder="Name"
+                    value={name}
                     onChange={(e) => {
-                        setData(e.target.value);
+                        setName(e.target.value);
+                        setStatusMessage("");
+                    }}
+                />
+                <input
+                    type="text"
+                    placeholder="Document"
+                    value={document}
+                    onChange={(e) => {
+                        setDocument(e.target.value);
                         setStatusMessage("");
                     }}
                 />
