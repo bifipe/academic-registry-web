@@ -104,6 +104,11 @@ export function App() {
                 <nav>
                     <ul>
                         <li>
+                            <a href="#" onClick={() => handleMenuClick("welcome")}>
+                                Welcome
+                            </a>
+                        </li>
+                        <li>
                             <a href="#" onClick={() => handleMenuClick("institution")}>
                                 Institution
                             </a>
