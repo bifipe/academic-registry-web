@@ -90,6 +90,7 @@ body {
     font-size: 16px;
     font-weight: 700;
     border-radius: 40px;
+    border: none;
     padding: 0 16px;
     background-color: #fff;
     cursor: pointer;
@@ -143,6 +144,20 @@ h2 {
 
 .form button:hover {
     background-color: #e0e0e0;
+}
+
+.form button:disabled:hover {
+    background-color: #fff;
+    cursor: grabbing;
+}
+
+.form textarea {
+    padding: 12px;
+    background-color: #fff;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: grabbing;
 }
 
 table {
@@ -204,3 +219,9 @@ tbody tr.subheader td {
 td.media, td.attendance {
     text-align: right;
 } */
+
+p {
+    font-weight: bold;
+    margin-bottom: 36px;
+
+}

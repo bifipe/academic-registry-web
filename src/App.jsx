@@ -11,11 +11,13 @@ import { GetGrade } from "./components/GetGrade";
 import { AddAllowedAddress } from "./components/AddAllowedAddres";
 import { TestEncryption } from "./components/TestEncrpytion";
 import { AddStudentInformation } from "./components/AddStudentInformation";
+import { WelcomeStudent } from "./components/WelcomeStudent";
 
 export function App() {
-    const [activeSection, setActiveSection] = useState("");
+    const [activeSection, setActiveSection] = useState("welcome");
     const [account, setAccount] = useState(null);
     const [statusMessage, setStatusMessage] = useState("");
+    //const [isRegistered, setIsRegistered] = useState(false);
 
     const handleMenuClick = (section) => {
         setActiveSection(section);
@@ -42,7 +44,18 @@ export function App() {
         }
     };
 
+    /* const handleRegister = ({ address, publicKey }) => {
+        console.log("User registered:", { address, publicKey });
+        setIsRegistered(true);
+    }; */
+
     const sections = {
+        welcome: (
+            <section className="content-area">
+                {/* <WelcomeScreen onRegister={handleRegister} /> */}
+                <WelcomeStudent setStatusMessage={setStatusMessage} />
+            </section>
+        ),
         institution: (
             <section className="content-area">
                 <AddInstitution setStatusMessage={setStatusMessage} />
@@ -87,6 +100,7 @@ export function App() {
                     <img src={dappIcon} alt="DApp Icon" />
                     <h1>rec.dapp</h1>
                 </div>
+
                 <nav>
                     <ul>
                         <li>
