@@ -12,6 +12,7 @@ import { AddAllowedAddress } from "./components/AddAllowedAddres";
 import { TestEncryption } from "./components/TestEncrpytion";
 import { AddStudentInformation } from "./components/AddStudentInformation";
 import { WelcomeStudent } from "./components/WelcomeStudent";
+import { AddGrades } from "./components/AddGrades";
 
 export function App() {
     const [activeSection, setActiveSection] = useState("welcome");
@@ -82,6 +83,7 @@ export function App() {
         grade: (
             <section className="content-area">
                 <AddGrade setStatusMessage={setStatusMessage} />
+                <AddGrades setStatusMessage={setStatusMessage} />
                 <GetGrade setStatusMessage={setStatusMessage} />
             </section>
         ),
