@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { encryptMessage } from "../service/EncryptionService";
 import { ethers } from "ethers";
-import { recoverPublicKey } from "@ethersproject/signing-key";
 import { connectToContract } from "../lib/ethers";
+import { encrypt } from '@metamask/eth-sig-util';
 
 export function AddStudentInformation({ setStatusMessage }) {
     const [name, setName] = useState("");
@@ -22,26 +21,47 @@ export function AddStudentInformation({ setStatusMessage }) {
                 document: document
             };
 
-            const message = "Do you allow the system to store your personal information?\n(It will be encrypted with your public key)";
-
-            const messageHash = ethers.hashMessage(message);
-
             const provider = new ethers.BrowserProvider(window.ethereum);
             const signer = await provider.getSigner();
-            const signature = await signer.signMessage(message);
+            const address = await signer.getAddress();
             
-            const publicKey = recoverPublicKey(messageHash, signature);
+            const encryptionPublicKey = await window.ethereum.request({
+                "method": "eth_getEncryptionPublicKey",
+                "params": [
+                    address
+               ],
+            });
 
-            const encryptedData = await encryptMessage(publicKey.slice(2), JSON.stringify(personalInformation));
-
-            console.log(JSON.stringify(encryptedData));
+            const buf = Buffer.from(
+                JSON.stringify(
+                    encrypt(
+                        { publicKey: encryptionPublicKey, data: JSON.stringify(personalInformation), version: 'x25519-xsalsa20-poly1305' },
+                    )
+                ),
+                'utf8'
+            )
+            const encryptedValue = '0x' + buf.toString('hex');
 
             const contract = await connectToContract();
-            const tx = await contract.addStudentInformation(publicKey, JSON.stringify(encryptedData));
+            const tx = await contract.addStudentInformation(encryptedValue);
 
             setStatusMessage("Transaction submitted, waiting for confirmation...");
             await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Student information added successfully!");
+
+            const response = await contract.retrieveStudentInformation(address);
+
+            console.log(response);
+
+            const information = await window.ethereum.request({
+                "method": "eth_decrypt",
+                "params": [
+                    response,
+                    address
+               ],
+            });
+
+            console.log(information);
 
         } catch (error) {
             console.error("Error in AddStudentInformation:", error);
