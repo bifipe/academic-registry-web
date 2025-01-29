@@ -4,6 +4,7 @@ import { connectToContract } from "../lib/ethers";
 export function GetGrade({ setStatusMessage }) {
     const [queryStudentAddress, setQueryStudentAddress] = useState("");
     const [queriedStudentGrades, setQueriedStudentGrades] = useState(null);
+    const [studentInfo, setStudentInfo] = useState(null);
 
     const getGrade = async () => {
         if (!queryStudentAddress) {
@@ -12,8 +13,31 @@ export function GetGrade({ setStatusMessage }) {
         }
 
         try {
+            setStatusMessage("");
+            
             const contract = await connectToContract();
+            const studentEncryptedInformation = await contract.retrieveStudentInformation(queryStudentAddress);
             const studentGrades = await contract.getGrades(queryStudentAddress);
+
+            console.log(studentEncryptedInformation);
+
+            if (!studentEncryptedInformation || studentGrades.length === 0) {
+                setStudentInfo(null);
+                setQueriedStudentGrades(null);
+                setStatusMessage("No grades found for this student.");
+                return;
+            }
+
+            const studentInformation = await window.ethereum.request({
+                "method": "eth_decrypt",
+                "params": [
+                    studentEncryptedInformation,
+                    queryStudentAddress
+                ],
+            });
+            setStudentInfo(JSON.parse(studentInformation));
+
+            console.log(studentInformation);
 
             const grades = studentGrades.map((grade) => ({
                 disciplineCode: grade.disciplineCode,
@@ -27,6 +51,8 @@ export function GetGrade({ setStatusMessage }) {
         } catch (error) {
             console.error("Error fetching grades:", error);
             setStatusMessage("Failed to fetch grades details.");
+            setStudentInfo(null);
+            setQueriedStudentGrades(null);
         }
     };
 
@@ -57,9 +83,12 @@ export function GetGrade({ setStatusMessage }) {
                     Get Grades
                 </button>
             </form>
-            {queriedStudentGrades && (
+            {studentInfo?.name && queriedStudentGrades && (
                 <div>
                     <h3>Grades Details</h3>
+                    <p>
+                        {studentInfo.name} - {studentInfo.document}
+                    </p>
                     <table>
                         <thead>
                             <tr>
