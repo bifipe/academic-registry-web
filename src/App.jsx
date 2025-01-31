@@ -29,11 +29,6 @@ export function App() {
         }, 50);
     };
 
-    const handleUserSelection = (type) => {
-        setUserType(type);
-        handleMenuClick(type === "institution" ? "institution" : type === "student" ? "student" : "grade");
-    };
-
     const connectWallet = async () => {
         if (!window.ethereum) {
             alert("Metamask is not installed");
@@ -91,7 +86,7 @@ export function App() {
     };
 
     const sections = {
-        welcome: <Welcome handleUserSelection={handleUserSelection} />,
+        welcome: <Welcome />,
         ...Object.keys(menuOptions[userType]?.components || {}).reduce((acc, section) => {
             acc[section] = <>{menuOptions[userType].components[section]}</>;
             return acc;
