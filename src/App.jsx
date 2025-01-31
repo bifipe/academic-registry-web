@@ -11,22 +11,26 @@ import { GetGrade } from "./components/GetGrade";
 import { AddAllowedAddress } from "./components/AddAllowedAddres";
 import { TestEncryption } from "./components/TestEncrpytion";
 import { AddStudentInformation } from "./components/AddStudentInformation";
-import { WelcomeStudent } from "./components/WelcomeStudent";
+import { Welcome } from "./components/Welcome";
 import { AddGrades } from "./components/AddGrades";
 
 export function App() {
     const [activeSection, setActiveSection] = useState("welcome");
     const [account, setAccount] = useState(null);
     const [statusMessage, setStatusMessage] = useState("");
-    //const [isRegistered, setIsRegistered] = useState(false);
+    const [userType, setUserType] = useState(null);
 
     const handleMenuClick = (section) => {
         setActiveSection(section);
 
-        const contentArea = document.querySelector(".content-area");
-        if (contentArea) {
-            contentArea.scrollTop = 0;
-        }
+        setTimeout(() => {
+            document.querySelector(".content-area")?.scrollTo({ top: 0, behavior: "smooth" });
+        }, 50);
+    };
+
+    const handleUserSelection = (type) => {
+        setUserType(type);
+        handleMenuClick(type === "institution" ? "institution" : type === "student" ? "student" : "grade");
     };
 
     const connectWallet = async () => {
@@ -45,54 +49,46 @@ export function App() {
         }
     };
 
-    /* const handleRegister = ({ address, publicKey }) => {
-        console.log("User registered:", { address, publicKey });
-        setIsRegistered(true);
-    }; */
+    const menuOptions = {
+        institution: {
+            menu: ["institution", "course", "discipline", "student", "grade", "permission"],
+            components: {
+                institution: [<AddInstitution key="add-institution" setStatusMessage={setStatusMessage} />,
+                <GetInstitution key="get-institution" setStatusMessage={setStatusMessage} />],
+                course: [<AddCourse key="add-course" setStatusMessage={setStatusMessage} />],
+                discipline: [<AddDiscipline key="add-discipline" setStatusMessage={setStatusMessage} />],
+                student: [<AddStudent key="add-student" setStatusMessage={setStatusMessage} />,
+                <EnrollStudentInDiscipline key="enroll-student" setStatusMessage={setStatusMessage} />,
+                <AddStudentInformation key="add-student-info" setStatusMessage={setStatusMessage} />],
+                grade: [<AddGrade key="add-grade" setStatusMessage={setStatusMessage} />,
+                <AddGrades key="add-grades" setStatusMessage={setStatusMessage} />,
+                <GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
+                permission: [<AddAllowedAddress key="add-permission" setStatusMessage={setStatusMessage} />,
+                <TestEncryption key="test-encryption" setStatusMessage={setStatusMessage} />],
+            }
+        },
+        student: {
+            menu: ["student", "grade", "permission"],
+            components: {
+                student: [<AddStudentInformation key="add-student-info" setStatusMessage={setStatusMessage} />],
+                grade: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
+                permission: [<AddAllowedAddress key="add-permission" setStatusMessage={setStatusMessage} />],
+            }
+        },
+        viewer: {
+            menu: ["grade"],
+            components: {
+                grade: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
+            }
+        }
+    };
 
     const sections = {
-        welcome: (
-            <section className="content-area">
-                {/* <WelcomeScreen onRegister={handleRegister} /> */}
-                <WelcomeStudent setStatusMessage={setStatusMessage} />
-            </section>
-        ),
-        institution: (
-            <section className="content-area">
-                <AddInstitution setStatusMessage={setStatusMessage} />
-                <GetInstitution setStatusMessage={setStatusMessage} />
-            </section>
-        ),
-        course: (
-            <section className="content-area">
-                <AddCourse setStatusMessage={setStatusMessage} />
-            </section>
-        ),
-        discipline: (
-            <section className="content-area">
-                <AddDiscipline setStatusMessage={setStatusMessage} />
-            </section>
-        ),
-        student: (
-            <section className="content-area">
-                <AddStudent setStatusMessage={setStatusMessage} />
-                <EnrollStudentInDiscipline setStatusMessage={setStatusMessage} />
-                <AddStudentInformation setStatusMessage={setStatusMessage} />
-            </section>
-        ),
-        grade: (
-            <section className="content-area">
-                <AddGrade setStatusMessage={setStatusMessage} />
-                <AddGrades setStatusMessage={setStatusMessage} />
-                <GetGrade setStatusMessage={setStatusMessage} />
-            </section>
-        ),
-        permission: (
-            <section className="content-area">
-                <AddAllowedAddress setStatusMessage={setStatusMessage} />
-                <TestEncryption setStatusMessage={setStatusMessage} />
-            </section>
-        )
+        welcome: <Welcome handleUserSelection={handleUserSelection} />,
+        ...Object.keys(menuOptions[userType]?.components || {}).reduce((acc, section) => {
+            acc[section] = <>{menuOptions[userType].components[section]}</>;
+            return acc;
+        }, {})
     };
 
     return (
@@ -106,43 +102,20 @@ export function App() {
                 <nav>
                     <ul>
                         <li>
-                            <a href="#" onClick={() => handleMenuClick("welcome")}>
-                                Welcome
-                            </a>
+                            <a href="#" onClick={() => handleMenuClick("welcome")}>Welcome</a>
                         </li>
-                        <li>
-                            <a href="#" onClick={() => handleMenuClick("institution")}>
-                                Institution
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" onClick={() => handleMenuClick("course")}>
-                                Course
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" onClick={() => handleMenuClick("discipline")}>
-                                Discipline
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" onClick={() => handleMenuClick("student")}>
-                                Student
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" onClick={() => handleMenuClick("grade")}>
-                                Grade
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" onClick={() => handleMenuClick("permission")}>
-                                Permission
-                            </a>
-                        </li>
+                        {userType &&
+                            menuOptions[userType].menu.map((key) => (
+                                <li key={key}>
+                                    <a href="#" onClick={() => handleMenuClick(key)}>
+                                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                                    </a>
+                                </li>
+                            ))}
                     </ul>
                 </nav>
             </aside>
+
             <main className="main-content">
                 <header className="top-bar">
                     {statusMessage && <p className="message">{statusMessage}</p>}
@@ -152,7 +125,8 @@ export function App() {
                         </button>
                     </div>
                 </header>
-                {sections[activeSection]}
+
+                <section className="content-area">{sections[activeSection]}</section>
             </main>
         </div>
     );
