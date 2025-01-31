@@ -13,6 +13,7 @@ import { TestEncryption } from "./components/TestEncrpytion";
 import { AddStudentInformation } from "./components/AddStudentInformation";
 import { Welcome } from "./components/Welcome";
 import { AddGrades } from "./components/AddGrades";
+import { connectToContract } from "./lib/ethers";
 
 export function App() {
     const [activeSection, setActiveSection] = useState("welcome");
@@ -43,6 +44,12 @@ export function App() {
             console.log("Wallet connected!");
             setAccount(accounts[0]);
             setStatusMessage("Wallet connected!");
+
+            const contract = await connectToContract();
+            const userPermission = await contract.getPermission();
+
+            setUserType(userPermission);
+
         } catch (error) {
             console.error("Error connecting wallet:", error);
             setStatusMessage("Failed to connect wallet.");
