@@ -5,13 +5,13 @@ export function AddGrade({ setStatusMessage }) {
     const [institutionAddress, setInstitutionAddress] = useState("");
     const [studentAddress, setStudentAddress] = useState("");
     const [disciplineCode, setDisciplineCode] = useState("");
-    const [period, setPeriod] = useState("");
-    const [media, setMedia] = useState("");
+    const [semester, setSemester] = useState("");
+    const [grade, setGrade] = useState("");
     const [attendance, setAttendance] = useState("");
     const [status, setStatus] = useState("");
 
     const addGrade = async () => {
-        if (!institutionAddress || !studentAddress || !disciplineCode || !period || !media || !attendance || !status) {
+        if (!institutionAddress || !studentAddress || !disciplineCode || !semester || !grade || !attendance || !status) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
@@ -22,8 +22,8 @@ export function AddGrade({ setStatusMessage }) {
                 institutionAddress,
                 studentAddress,
                 disciplineCode,
-                period,
-                media,
+                semester,
+                grade,
                 attendance,
                 JSON.parse(status)
             );
@@ -35,8 +35,8 @@ export function AddGrade({ setStatusMessage }) {
             setInstitutionAddress("");
             setStudentAddress("");
             setDisciplineCode("");
-            setPeriod("");
-            setMedia("");
+            setSemester("");
+            setGrade("");
             setAttendance("");
             setStatus("");
         } catch (error) {
@@ -75,15 +75,15 @@ export function AddGrade({ setStatusMessage }) {
                 />
                 <input
                     type="text"
-                    placeholder="Period"
-                    value={period}
-                    onChange={(e) => setPeriod(e.target.value)}
+                    placeholder="Semester"
+                    value={semester}
+                    onChange={(e) => setSemester(e.target.value)}
                 />
                 <input
                     type="text"
-                    placeholder="Media"
-                    value={media}
-                    onChange={(e) => setMedia(e.target.value)}
+                    placeholder="Grade"
+                    value={grade}
+                    onChange={(e) => setGrade(e.target.value)}
                 />
                 <input
                     type="text"

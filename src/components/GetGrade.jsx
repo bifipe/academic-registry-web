@@ -41,8 +41,8 @@ export function GetGrade({ setStatusMessage }) {
 
             const grades = studentGrades.map((grade) => ({
                 disciplineCode: grade.disciplineCode,
-                period: grade.period,
-                media: grade.media,
+                semester: grade.semester,
+                grade: grade.grade,
                 attendance: grade.attendance,
                 status: grade.status,
             }));
@@ -56,12 +56,12 @@ export function GetGrade({ setStatusMessage }) {
         }
     };
 
-    const groupGradesByPeriod = (grades) => {
+    const groupGradesBySemester = (grades) => {
         return grades.reduce((groups, grade) => {
-            if (!groups[grade.period]) {
-                groups[grade.period] = [];
+            if (!groups[grade.semester]) {
+                groups[grade.semester] = [];
             }
-            groups[grade.period].push(grade);
+            groups[grade.semester].push(grade);
             return groups;
         }, {});
     };
@@ -93,22 +93,22 @@ export function GetGrade({ setStatusMessage }) {
                         <thead>
                             <tr>
                                 <th>Discipline Code</th>
-                                <th className="media">Media</th>
+                                <th className="grade">Grade</th>
                                 <th className="attendance">Attendance</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.entries(groupGradesByPeriod(queriedStudentGrades)).map(
-                                ([period, grades]) => (
-                                    <React.Fragment key={period}>
+                            {Object.entries(groupGradesBySemester(queriedStudentGrades)).map(
+                                ([semester, grades]) => (
+                                    <React.Fragment key={semester}>
                                         <tr className="subheader">
-                                            <td colSpan={4}>Period {period}</td>
+                                            <td colSpan={4}>Semester {semester}</td>
                                         </tr>
                                         {grades.map((grade) => (
                                             <tr key={grade.disciplineCode}>
                                                 <td>{grade.disciplineCode}</td>
-                                                <td className="media">{grade.media.toString()}</td>
+                                                <td className="grade">{grade.grade.toString()}</td>
                                                 <td className="attendance">{grade.attendance.toString()}</td>
                                                 <td>{grade.status.toString()}</td>
                                             </tr>

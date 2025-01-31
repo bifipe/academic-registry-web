@@ -1,22 +1,22 @@
 [
     {
         "disciplineCode": "GEXT7301",
-        "period": 1,
-        "media": 80,
+        "semester": 1,
+        "grade": 80,
         "attendance": 90,
         "status": true
     },
     {
         "disciplineCode": "GCC1102",
-        "period": 1,
-        "media": 100,
+        "semester": 1,
+        "grade": 100,
         "attendance": 80,
         "status": true
     },
     {
         "disciplineCode": "GCC1103",
-        "period": 2,
-        "media": 90,
+        "semester": 2,
+        "grade": 90,
         "attendance": 85,
         "status": true
     }
