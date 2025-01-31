@@ -49,20 +49,6 @@ export function AddStudentInformation({ setStatusMessage }) {
             await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Student information added successfully!");
 
-            const response = await contract.retrieveStudentInformation(address);
-
-            console.log(response);
-
-            const information = await window.ethereum.request({
-                "method": "eth_decrypt",
-                "params": [
-                    response,
-                    address
-               ],
-            });
-
-            console.log(information);
-
         } catch (error) {
             console.error("Error in AddStudentInformation:", error);
             setStatusMessage("Failed to add the student's information.");
