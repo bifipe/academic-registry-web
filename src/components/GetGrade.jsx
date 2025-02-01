@@ -68,7 +68,7 @@ export function GetGrade({ setStatusMessage }) {
 
     return (
         <div>
-            <h2>Get Grades</h2>
+            <h2>Get Transcript</h2>
             <form className="form">
                 <input
                     type="text"

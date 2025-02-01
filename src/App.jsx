@@ -9,7 +9,6 @@ import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDisciplin
 import { AddGrade } from "./components/AddGrade";
 import { GetGrade } from "./components/GetGrade";
 import { AddAllowedAddress } from "./components/AddAllowedAddres";
-import { TestEncryption } from "./components/TestEncrpytion";
 import { AddStudentInformation } from "./components/AddStudentInformation";
 import { Welcome } from "./components/Welcome";
 import { AddGrades } from "./components/AddGrades";
@@ -52,35 +51,38 @@ export function App() {
     };
 
     const menuOptions = {
+        owner: {
+            menu: ["institution"],
+            components: {
+                institution: [<AddInstitution key="add-institution" setStatusMessage={setStatusMessage} />],
+            }
+        },
         institution: {
-            menu: ["institution", "course", "discipline", "student", "grade", "permission"],
+            menu: ["institution", "course", "discipline", "student", "grade"],
             components: {
                 institution: [<AddInstitution key="add-institution" setStatusMessage={setStatusMessage} />,
                 <GetInstitution key="get-institution" setStatusMessage={setStatusMessage} />],
                 course: [<AddCourse key="add-course" setStatusMessage={setStatusMessage} />],
                 discipline: [<AddDiscipline key="add-discipline" setStatusMessage={setStatusMessage} />],
                 student: [<AddStudent key="add-student" setStatusMessage={setStatusMessage} />,
-                <EnrollStudentInDiscipline key="enroll-student" setStatusMessage={setStatusMessage} />,
-                <AddStudentInformation key="add-student-info" setStatusMessage={setStatusMessage} />],
+                <EnrollStudentInDiscipline key="enroll-student" setStatusMessage={setStatusMessage} />],
                 grade: [<AddGrade key="add-grade" setStatusMessage={setStatusMessage} />,
                 <AddGrades key="add-grades" setStatusMessage={setStatusMessage} />,
                 <GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
-                permission: [<AddAllowedAddress key="add-permission" setStatusMessage={setStatusMessage} />,
-                <TestEncryption key="test-encryption" setStatusMessage={setStatusMessage} />],
             }
         },
         student: {
-            menu: ["student", "grade", "permission"],
+            menu: ["student", "transcript", "permission"],
             components: {
                 student: [<AddStudentInformation key="add-student-info" setStatusMessage={setStatusMessage} />],
-                grade: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
+                transcript: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
                 permission: [<AddAllowedAddress key="add-permission" setStatusMessage={setStatusMessage} />],
             }
         },
         viewer: {
-            menu: ["grade"],
+            menu: ["transcript"],
             components: {
-                grade: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
+                transcript: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
             }
         }
     };
