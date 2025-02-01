@@ -43,6 +43,8 @@ export function App() {
             const userPermission = await contract.getPermission();
 
             setUserType(userPermission);
+            
+            setActiveSection("welcome");
 
         } catch (error) {
             console.error("Error connecting wallet:", error);
