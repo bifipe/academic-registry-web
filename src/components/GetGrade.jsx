@@ -5,6 +5,7 @@ export function GetGrade({ setStatusMessage }) {
     const [queryStudentAddress, setQueryStudentAddress] = useState("");
     const [queriedStudentGrades, setQueriedStudentGrades] = useState(null);
     const [studentInfo, setStudentInfo] = useState(null);
+    const [institutionInfo, setInstitutionInfo] = useState(null);
 
     const getGrade = async () => {
         if (!queryStudentAddress) {
@@ -14,10 +15,12 @@ export function GetGrade({ setStatusMessage }) {
 
         try {
             setStatusMessage("");
-            
+
             const contract = await connectToContract();
+
             const studentEncryptedInformation = await contract.retrieveStudentInformation(queryStudentAddress);
             const studentGrades = await contract.getGrades(queryStudentAddress);
+            const studentInstitutionData = await contract.getStudentInstitutionData(queryStudentAddress);
 
             console.log(studentEncryptedInformation);
 
@@ -48,11 +51,21 @@ export function GetGrade({ setStatusMessage }) {
             }));
 
             setQueriedStudentGrades(grades);
+
+            if (studentInstitutionData) {
+                setInstitutionInfo({
+                    institutionName: studentInstitutionData[0].name,
+                    courseCode: studentInstitutionData[1].code,
+                    courseName: studentInstitutionData[1].name,
+                });
+            }
+
         } catch (error) {
             console.error("Error fetching grades:", error);
             setStatusMessage("Failed to fetch grades details.");
             setStudentInfo(null);
             setQueriedStudentGrades(null);
+            setInstitutionInfo(null);
         }
     };
 
@@ -83,13 +96,28 @@ export function GetGrade({ setStatusMessage }) {
                     Get Grades
                 </button>
             </form>
-            {studentInfo?.name && queriedStudentGrades && (
+            {studentInfo?.name && queriedStudentGrades && institutionInfo && (
                 <div>
                     <h3>Grades Details</h3>
-                    <p>
-                        {studentInfo.name} - {studentInfo.document}
-                    </p>
                     <table>
+                        <thead className="institution-info">
+                            <tr>
+                                <td colSpan={4}>
+                                    <strong>{institutionInfo.institutionName}</strong>
+                                    <br />
+                                    {institutionInfo.courseCode} - {institutionInfo.courseName}
+                                </td>
+                            </tr>
+                        </thead>
+                        <thead className="student-info">
+                            <tr>
+                                <td colSpan={4}>
+                                    <strong>{studentInfo.name}</strong>
+                                    <br />
+                                    {studentInfo.document}
+                                </td>
+                            </tr>
+                        </thead>
                         <thead>
                             <tr>
                                 <th>Discipline Code</th>

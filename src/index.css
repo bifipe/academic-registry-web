@@ -243,3 +243,26 @@ td.grade, td.attendance {
     margin-top: 10px;
     margin-bottom: 12px;
 }
+
+.student-info {
+    color: #fff;
+    font-size: 16px;
+    background-color: #121212;
+    text-align: left;
+}
+
+.student-info td{
+    padding: 12px;
+}
+
+.institution-info {
+    color: #fff;
+    font-size: 16px;
+    background-color: #242424;
+    text-align: center;
+    border-bottom: 1px solid #424242;
+}
+
+.institution-info td{
+    padding: 12px;
+}
