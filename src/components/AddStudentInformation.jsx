@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
-import { encrypt } from '@metamask/eth-sig-util';
+import { encryptSafely } from '@metamask/eth-sig-util';
 
 export function AddStudentInformation({ setStatusMessage }) {
     const [name, setName] = useState("");
@@ -34,7 +34,7 @@ export function AddStudentInformation({ setStatusMessage }) {
 
             const buf = Buffer.from(
                 JSON.stringify(
-                    encrypt(
+                    encryptSafely(
                         { publicKey: encryptionPublicKey, data: JSON.stringify(personalInformation), version: 'x25519-xsalsa20-poly1305' },
                     )
                 ),
