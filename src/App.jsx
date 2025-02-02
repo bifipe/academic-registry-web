@@ -8,7 +8,7 @@ import { AddStudent } from "./components/AddStudent";
 import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDiscipline";
 import { AddGrade } from "./components/AddGrade";
 import { GetGrade } from "./components/GetGrade";
-import { AddAllowedAddress } from "./components/AddAllowedAddres";
+import { AddAllowedAddress } from "./components/AddAllowedAddress";
 import { AddStudentInformation } from "./components/AddStudentInformation";
 import { Welcome } from "./components/Welcome";
 import { AddGrades } from "./components/AddGrades";
