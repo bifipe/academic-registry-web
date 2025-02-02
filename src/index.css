@@ -212,13 +212,13 @@ tbody tr.subheader td {
     font-size: 13px;
 }
 
-/* th.grade, th.attendance {
+th.grade, th.attendance, th.creditCount, th.workload {
     text-align: right;
 }
 
-td.grade, td.attendance {
+td.grade, td.attendance, td.creditCount, td.workload {
     text-align: right;
-} */
+}
 
 /* p {
     font-weight: bold;

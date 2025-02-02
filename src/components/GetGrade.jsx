@@ -19,10 +19,9 @@ export function GetGrade({ setStatusMessage }) {
             const contract = await connectToContract();
 
             const studentEncryptedInformation = await contract.retrieveStudentInformation(queryStudentAddress);
-            const studentGrades = await contract.getGrades(queryStudentAddress);
+            const [studentGrades, disciplineDetails] = await contract.getStudentTranscript(queryStudentAddress);
             const studentInstitutionData = await contract.getStudentInstitutionData(queryStudentAddress);
 
-            console.log(studentEncryptedInformation);
 
             if (!studentEncryptedInformation || studentGrades.length === 0) {
                 setStudentInfo(null);
@@ -40,17 +39,17 @@ export function GetGrade({ setStatusMessage }) {
             });
             setStudentInfo(JSON.parse(studentInformation));
 
-            console.log(studentInformation);
-
-            const grades = studentGrades.map((grade) => ({
+            const gradesWithDetails = studentGrades.map((grade, index) => ({
                 disciplineCode: grade.disciplineCode,
+                disciplineName: disciplineDetails[index].name,
+                workload: disciplineDetails[index].workload,
+                creditCount: disciplineDetails[index].creditCount,
                 semester: grade.semester,
                 grade: grade.grade,
                 attendance: grade.attendance,
                 status: grade.status,
             }));
-
-            setQueriedStudentGrades(grades);
+            setQueriedStudentGrades(gradesWithDetails);
 
             if (studentInstitutionData) {
                 setInstitutionInfo({
@@ -102,7 +101,7 @@ export function GetGrade({ setStatusMessage }) {
                     <table>
                         <thead className="institution-info">
                             <tr>
-                                <td colSpan={4}>
+                                <td colSpan={7}>
                                     <strong>{institutionInfo.institutionName}</strong>
                                     <br />
                                     {institutionInfo.courseCode} - {institutionInfo.courseName}
@@ -111,7 +110,7 @@ export function GetGrade({ setStatusMessage }) {
                         </thead>
                         <thead className="student-info">
                             <tr>
-                                <td colSpan={4}>
+                                <td colSpan={7}>
                                     <strong>{studentInfo.name}</strong>
                                     <br />
                                     {studentInfo.document}
@@ -121,6 +120,9 @@ export function GetGrade({ setStatusMessage }) {
                         <thead>
                             <tr>
                                 <th>Discipline Code</th>
+                                <th>Discipline Name</th>
+                                <th className="workload">Workload</th>
+                                <th className="creditCount">Credits</th>
                                 <th className="grade">Grade</th>
                                 <th className="attendance">Attendance</th>
                                 <th>Status</th>
@@ -131,11 +133,14 @@ export function GetGrade({ setStatusMessage }) {
                                 ([semester, grades]) => (
                                     <React.Fragment key={semester}>
                                         <tr className="subheader">
-                                            <td colSpan={4}>Semester {semester}</td>
+                                            <td colSpan={7}>Semester {semester}</td>
                                         </tr>
                                         {grades.map((grade) => (
                                             <tr key={grade.disciplineCode}>
                                                 <td>{grade.disciplineCode}</td>
+                                                <td>{grade.disciplineName}</td>
+                                                <td className="workload">{grade.workload.toString()}</td>
+                                                <td className="creditCount">{grade.creditCount.toString()}</td>
                                                 <td className="grade">{grade.grade.toString()}</td>
                                                 <td className="attendance">{grade.attendance.toString()}</td>
                                                 <td>{grade.status.toString()}</td>
