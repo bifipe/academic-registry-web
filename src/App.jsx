@@ -107,12 +107,12 @@ export function App() {
 
                 <nav>
                     <ul>
-                        <li>
+                        <li className={activeSection === "welcome" ? "active" : ""}>
                             <a href="#" onClick={() => handleMenuClick("welcome")}>Welcome</a>
                         </li>
                         {userType &&
                             menuOptions[userType].menu.map((key) => (
-                                <li key={key}>
+                                <li key={key} className={activeSection === key ? "active" : ""}>
                                     <a href="#" onClick={() => handleMenuClick(key)}>
                                         {key.charAt(0).toUpperCase() + key.slice(1)}
                                     </a>
