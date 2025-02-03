@@ -30,7 +30,7 @@ export function AddDiscipline({ setStatusMessage }) {
 
             setStatusMessage("Transaction submitted, waiting for confirmation...");
             await tx.wait(); // Espera a transação ser confirmada
-            setStatusMessage("Dsicipline added successfully!");
+            setStatusMessage("Discipline added successfully!");
 
             setInstitutionAddress("");
             setCourseCode("");
