@@ -37,7 +37,11 @@ export function GetGrade({ setStatusMessage }) {
                     queryStudentAddress
                 ],
             });
-            setStudentInfo(JSON.parse(studentInformation));
+
+            const parsedStudentInfo = JSON.parse(studentInformation);
+            const parsedData = JSON.parse(parsedStudentInfo.data);
+            
+            setStudentInfo(parsedData);
 
             const gradesWithDetails = studentGrades.map((grade, index) => ({
                 disciplineCode: grade.disciplineCode,
