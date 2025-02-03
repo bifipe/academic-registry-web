@@ -62,8 +62,7 @@ export function App() {
         institution: {
             menu: ["institution", "course", "discipline", "student", "grade"],
             components: {
-                institution: [<AddInstitution key="add-institution" setStatusMessage={setStatusMessage} />,
-                <GetInstitution key="get-institution" setStatusMessage={setStatusMessage} />],
+                institution: [<GetInstitution key="get-institution" setStatusMessage={setStatusMessage} />],
                 course: [<AddCourse key="add-course" setStatusMessage={setStatusMessage} />],
                 discipline: [<AddDiscipline key="add-discipline" setStatusMessage={setStatusMessage} />],
                 student: [<AddStudent key="add-student" setStatusMessage={setStatusMessage} />,
