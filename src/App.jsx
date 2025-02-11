@@ -12,6 +12,8 @@ import { AddAllowedAddress } from "./components/AddAllowedAddress";
 import { AddStudentInformation } from "./components/AddStudentInformation";
 import { Welcome } from "./components/Welcome";
 import { AddGrades } from "./components/AddGrades";
+import { RequestAccess } from "./components/RequestAccess";
+import { RetrieveStudentInfo } from "./components/RetrieveStudentInfo";
 import { connectToContract } from "./lib/ethers";
 
 export function App() {
@@ -83,7 +85,9 @@ export function App() {
         viewer: {
             menu: ["transcript"],
             components: {
-                transcript: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
+                transcript: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />, 
+                <RequestAccess key="request-access" setStatusMessage={setStatusMessage} />,
+                <RetrieveStudentInfo key="retreive-info" setStatusMessage={setStatusMessage} />],
             }
         }
     };
