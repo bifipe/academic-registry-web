@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
 
 export function GetGrade({ setStatusMessage }) {
@@ -16,10 +17,33 @@ export function GetGrade({ setStatusMessage }) {
         try {
             setStatusMessage("");
 
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+
             const contract = await connectToContract();
 
             const student = await contract.getStudent(queryStudentAddress);
-            const studentEncryptedInformation = student.selfEncryptedInformation;
+
+            const userPermission = await contract.getPermission();
+
+            var studentEncryptedInformation = null;
+
+            switch(userPermission) {
+                case "student":
+                    studentEncryptedInformation = student.selfEncryptedInformation;
+                    break;
+                case "institution":
+                    studentEncryptedInformation = student.institutionEncryptedInformation;
+                    break;
+                case "viewer":
+                    studentEncryptedInformation = await contract.getEncryptedInfoWithRecipientKey(address, queryStudentAddress);
+                    break;
+                default:
+                    setStatusMessage("User does not have a valid permission on the contract!");
+                    return;
+            }
+
             const studentHash = student.publicHash;
             const [studentGrades, disciplineDetails] = await contract.getStudentTranscript(queryStudentAddress);
             const studentInstitutionData = await contract.getStudentInstitutionData(queryStudentAddress);
@@ -36,12 +60,11 @@ export function GetGrade({ setStatusMessage }) {
                 "method": "eth_decrypt",
                 "params": [
                     studentEncryptedInformation,
-                    queryStudentAddress
+                    address
                 ],
             });
 
-            const parsedStudentInfo = JSON.parse(JSON.parse(studentInformation));
-            //const parsedData = JSON.parse(parsedStudentInfo.data);
+            const parsedStudentInfo = JSON.parse(studentInformation);
             parsedStudentInfo.hash = studentHash;
             
             setStudentInfo(parsedStudentInfo);

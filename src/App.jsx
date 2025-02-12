@@ -7,7 +7,6 @@ import { AddCourse } from "./components/AddCourse";
 import { AddDiscipline } from "./components/AddDiscipline";
 import { AddStudent } from "./components/AddStudent";
 import { GetStudent } from "./components/GetStudentData";
-import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDiscipline";
 import { AddGrade } from "./components/AddGrade";
 import { GetGrade } from "./components/GetGrade";
 import { AllowAccessToAddress } from "./components/AllowAccessToAddress";
@@ -15,7 +14,6 @@ import { AddStudentInformation } from "./components/AddStudentInformation";
 import { Welcome } from "./components/Welcome";
 import { AddGrades } from "./components/AddGrades";
 import { RequestAccess } from "./components/RequestAccess";
-import { RetrieveStudentInfo } from "./components/RetrieveStudentInfo";
 import { ConfirmStudentInfo } from "./components/ConfirmStudentInformation";
 import { connectToContract } from "./lib/ethers";
 
@@ -91,9 +89,8 @@ export function App() {
         viewer: {
             menu: ["transcript"],
             components: {
-                transcript: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />, 
-                <RequestAccess key="request-access" setStatusMessage={setStatusMessage} />,
-                <RetrieveStudentInfo key="retreive-info" setStatusMessage={setStatusMessage} />],
+                transcript: [<RequestAccess key="request-access" setStatusMessage={setStatusMessage} />,
+                    <GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
             }
         }
     };
