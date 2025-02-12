@@ -25,7 +25,7 @@ export function AddStudentInformation({ setStatusMessage }) {
                 salt: salt
             };
 
-            const hash = hashMessage(personalInformation);
+            const hash = hashMessage(name + " - " + document + " - " + salt);
 
             const provider = new ethers.BrowserProvider(window.ethereum);
             const signer = await provider.getSigner();
