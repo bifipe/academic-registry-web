@@ -47,7 +47,7 @@ export function GetStudent({ setStatusMessage }) {
                 });
 
             }
-            
+            console.log(student.publicHash);
             console.log(studentInformation);
 
             setStatusMessage("Student information retrieved successfully!");

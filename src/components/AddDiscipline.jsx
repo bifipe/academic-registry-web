@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
 
 export function AddDiscipline({ setStatusMessage }) {
-    const [institutionAddress, setInstitutionAddress] = useState("");
     const [courseCode, setCourseCode] = useState("");
     const [disciplineCode, setDisciplineCode] = useState("");
     const [disciplineName, setDisciplineName] = useState("");
@@ -11,15 +11,19 @@ export function AddDiscipline({ setStatusMessage }) {
     const [creditCount, setCreditCount] = useState("");
 
     const addDiscipline = async () => {
-        if (!institutionAddress || !courseCode || !disciplineCode || !disciplineName || !ementa || !workload || !creditCount) {
+        if (!courseCode || !disciplineCode || !disciplineName || !ementa || !workload || !creditCount) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
 
         try {
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+
             const contract = await connectToContract();
             const tx = await contract.addDisciplineToCourse(
-                institutionAddress,
+                address,
                 courseCode,
                 disciplineCode,
                 disciplineName,
@@ -32,7 +36,6 @@ export function AddDiscipline({ setStatusMessage }) {
             await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Discipline added successfully!");
 
-            setInstitutionAddress("");
             setCourseCode("");
             setDisciplineCode("");
             setDisciplineName("");
@@ -49,15 +52,6 @@ export function AddDiscipline({ setStatusMessage }) {
         <div>
             <h2>Add Discipline</h2>
             <form className="form">
-                <input
-                    type="text"
-                    placeholder="Institution Address"
-                    value={institutionAddress}
-                    onChange={(e) => {
-                        setInstitutionAddress(e.target.value);
-                        setStatusMessage("");
-                    }}
-                />
                 <input
                     type="text"
                     placeholder="Course Code"

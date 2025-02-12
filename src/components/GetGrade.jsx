@@ -18,7 +18,9 @@ export function GetGrade({ setStatusMessage }) {
 
             const contract = await connectToContract();
 
-            const studentEncryptedInformation = await contract.retrieveStudentInformation(queryStudentAddress);
+            const student = await contract.getStudent(queryStudentAddress);
+            const studentEncryptedInformation = student.selfEncryptedInformation;
+            const studentHash = student.publicHash;
             const [studentGrades, disciplineDetails] = await contract.getStudentTranscript(queryStudentAddress);
             const studentInstitutionData = await contract.getStudentInstitutionData(queryStudentAddress);
 
@@ -38,10 +40,11 @@ export function GetGrade({ setStatusMessage }) {
                 ],
             });
 
-            const parsedStudentInfo = JSON.parse(studentInformation);
-            const parsedData = JSON.parse(parsedStudentInfo.data);
+            const parsedStudentInfo = JSON.parse(JSON.parse(studentInformation));
+            //const parsedData = JSON.parse(parsedStudentInfo.data);
+            parsedStudentInfo.hash = studentHash;
             
-            setStudentInfo(parsedData);
+            setStudentInfo(parsedStudentInfo);
 
             const gradesWithDetails = studentGrades.map((grade, index) => ({
                 disciplineCode: grade.disciplineCode,
@@ -49,6 +52,7 @@ export function GetGrade({ setStatusMessage }) {
                 workload: disciplineDetails[index].workload,
                 creditCount: disciplineDetails[index].creditCount,
                 semester: grade.semester,
+                year: grade.year,
                 grade: grade.grade,
                 attendance: grade.attendance,
                 status: grade.status,
@@ -115,9 +119,11 @@ export function GetGrade({ setStatusMessage }) {
                         <thead className="student-info">
                             <tr>
                                 <td colSpan={7}>
-                                    <strong>{studentInfo.name}</strong>
+                                    <strong>Student Name: {studentInfo.name}</strong>
                                     <br />
-                                    {studentInfo.document}
+                                    Student Document: {studentInfo.document}
+                                    <br />
+                                    Student Hash: {studentInfo.hash}
                                 </td>
                             </tr>
                         </thead>

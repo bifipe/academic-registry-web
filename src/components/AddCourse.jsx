@@ -1,23 +1,28 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
 
 export function AddCourse({ setStatusMessage }) {
-    const [institutionAddress, setInstitutionAddress] = useState("");
     const [code, setCode] = useState("");
     const [name, setName] = useState("");
     const [courseType, setCourseType] = useState("");
     const [numberOfSemesters, setNumberOfSemesters] = useState("");
 
     const addCourse = async () => {
-        if (!institutionAddress || !code || !name || !courseType || !numberOfSemesters) {
+        if (!code || !name || !courseType || !numberOfSemesters) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
 
         try {
+
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+
             const contract = await connectToContract();
             const tx = await contract.addCourse(
-                institutionAddress,
+                address,
                 code,
                 name,
                 courseType,
@@ -28,7 +33,6 @@ export function AddCourse({ setStatusMessage }) {
             await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Course added successfully!");
 
-            setInstitutionAddress("");
             setCode("");
             setName("");
             setCourseType("");
@@ -43,15 +47,6 @@ export function AddCourse({ setStatusMessage }) {
         <div>
             <h2>Add Course</h2>
             <form className="form">
-                <input
-                    type="text"
-                    placeholder="Institution Address"
-                    value={institutionAddress}
-                    onChange={(e) => {
-                        setInstitutionAddress(e.target.value);
-                        setStatusMessage("");
-                    }}
-                />
                 <input
                     type="text"
                     placeholder="Course Code"

@@ -6,7 +6,7 @@ import { GetInstitution } from "./components/GetInstitution";
 import { AddCourse } from "./components/AddCourse";
 import { AddDiscipline } from "./components/AddDiscipline";
 import { AddStudent } from "./components/AddStudent";
-import { GetStudent } from "./components/getStudent";
+import { GetStudent } from "./components/GetStudentData";
 import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDiscipline";
 import { AddGrade } from "./components/AddGrade";
 import { GetGrade } from "./components/GetGrade";

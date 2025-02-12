@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
 
 export function AddGrade({ setStatusMessage }) {
-    const [institutionAddress, setInstitutionAddress] = useState("");
     const [studentAddress, setStudentAddress] = useState("");
+    const [courseCode, setCourseCode] = useState("");
     const [disciplineCode, setDisciplineCode] = useState("");
     const [semester, setSemester] = useState("");
     const [year, setYear] = useState("");
@@ -12,16 +13,21 @@ export function AddGrade({ setStatusMessage }) {
     const [status, setStatus] = useState("");
 
     const addGrade = async () => {
-        if (!institutionAddress || !studentAddress || !disciplineCode || !semester || !year || !grade || !attendance || !status) {
+        if (!studentAddress || !courseCode || !disciplineCode || !semester || !year || !grade || !attendance || !status) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
 
         try {
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+
             const contract = await connectToContract();
             const tx = await contract.addGrade(
-                institutionAddress,
+                address,
                 studentAddress,
+                courseCode,
                 disciplineCode,
                 semester,
                 year,
@@ -34,10 +40,11 @@ export function AddGrade({ setStatusMessage }) {
             await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Grade added successfully!");
 
-            setInstitutionAddress("");
             setStudentAddress("");
+            setCourseCode("");
             setDisciplineCode("");
             setSemester("");
+            setYear("");
             setGrade("");
             setAttendance("");
             setStatus("");
@@ -53,21 +60,18 @@ export function AddGrade({ setStatusMessage }) {
             <form className="form">
                 <input
                     type="text"
-                    placeholder="Institution Address"
-                    value={institutionAddress}
-                    onChange={(e) => {
-                        setInstitutionAddress(e.target.value);
-                        setStatusMessage("");
-                    }}
-                />
-                <input
-                    type="text"
                     placeholder="Student Address"
                     value={studentAddress}
                     onChange={(e) => {
                         setStudentAddress(e.target.value);
                         setStatusMessage("");
                     }}
+                />
+                <input
+                    type="text"
+                    placeholder="Course Code"
+                    value={courseCode}
+                    onChange={(e) => setCourseCode(e.target.value)}
                 />
                 <input
                     type="text"
