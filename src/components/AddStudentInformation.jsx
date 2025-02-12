@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ethers, hashMessage, uuidV4 } from "ethers";
 import { connectToContract } from "../lib/ethers";
 import { encrypt } from '@metamask/eth-sig-util';
+import crypto from 'node:crypto';
 
 export function AddStudentInformation({ setStatusMessage }) {
     const [institutionAddress, setInstitutionAddress] = useState("");
@@ -17,7 +18,7 @@ export function AddStudentInformation({ setStatusMessage }) {
 
         try {
 
-            const salt = uuidV4();
+            var salt = crypto.randomBytes(16).toString('hex');
 
             const personalInformation = {
                 name: name,
@@ -25,7 +26,7 @@ export function AddStudentInformation({ setStatusMessage }) {
                 salt: salt
             };
 
-            const hash = hashMessage(name + " - " + document + " - " + salt);
+            const hash = crypto.createHash('sha256').update(name + " - " + document + " - " + salt).digest('hex');
 
             const provider = new ethers.BrowserProvider(window.ethereum);
             const signer = await provider.getSigner();
@@ -58,6 +59,10 @@ export function AddStudentInformation({ setStatusMessage }) {
             setStatusMessage("Transaction submitted, waiting for confirmation...");
             await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Student information added successfully!");
+
+            setInstitutionAddress("");
+            setName("");
+            setDocument("");
 
         } catch (error) {
             console.error("Error in AddStudentInformation:", error);

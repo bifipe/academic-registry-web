@@ -19,25 +19,23 @@ export function RetrieveStudentInfo({ setStatusMessage }) {
             const address = await signer.getAddress();
 
             const contract = await connectToContract();
-            const tx = await contract.getEncryptedInfoWithRecipientKey(address, studentAddress);
+            const studentInfo = await contract.getEncryptedInfoWithRecipientKey(address, studentAddress);
 
             const studentInformation = await window.ethereum.request({
                 "method": "eth_decrypt",
                 "params": [
-                    tx,
+                    studentInfo,
                     address
                 ],
             });
 
             console.log(studentInformation);
 
-            setStatusMessage("Transaction submitted, waiting for confirmation...");
-            await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Student information access request added successfully!");
 
         } catch (error) {
-            console.error("Error in AddStudentInformation:", error);
-            setStatusMessage("Failed to add the student's information.");
+            console.error("Error in RetrieveStudentInfo:", error);
+            setStatusMessage("Failed to retrieve the student's information. Do you have access to it? If not, request access using the Request access to Student Information form!");
         }
     };
 

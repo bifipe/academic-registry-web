@@ -1,20 +1,25 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
 
 export function AddStudent({ setStatusMessage }) {
-    const [institutionAddress, setInstitutionAddress] = useState("");
     const [studentAddress, setStudentAddress] = useState("");
 
     const addStudent = async () => {
-        if (!institutionAddress || !studentAddress) {
+        if (!studentAddress) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
 
         try {
+
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+
             const contract = await connectToContract();
             const tx = await contract.addStudent(
-                institutionAddress,
+                address,
                 studentAddress
             );
 
@@ -22,7 +27,6 @@ export function AddStudent({ setStatusMessage }) {
             await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Student added successfully!");
 
-            setInstitutionAddress("");
             setStudentAddress("");
         } catch (error) {
             console.error("Error adding student:", error);
@@ -34,15 +38,6 @@ export function AddStudent({ setStatusMessage }) {
         <div>
             <h2>Add Student</h2>
             <form className="form">
-                <input
-                    type="text"
-                    placeholder="Institution Address"
-                    value={institutionAddress}
-                    onChange={(e) => {
-                        setInstitutionAddress(e.target.value);
-                        setStatusMessage("");
-                    }}
-                />
                 <input
                     type="text"
                     placeholder="Student Address"

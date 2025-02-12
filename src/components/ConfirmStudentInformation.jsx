@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
+import { encrypt } from '@metamask/eth-sig-util';
 
 export function ConfirmStudentInfo({ setStatusMessage }) {
     const [studentAddress, setStudentAddress] = useState("");
@@ -37,7 +38,7 @@ export function ConfirmStudentInfo({ setStatusMessage }) {
             const buf = Buffer.from(
                 JSON.stringify(
                     encrypt(
-                        { publicKey: student.publicKey, data: JSON.stringify(studentInformation), version: 'x25519-xsalsa20-poly1305' },
+                        { publicKey: student.publicKey, data: studentInformation, version: 'x25519-xsalsa20-poly1305' },
                     )
                 ),
                 'utf8'
@@ -49,11 +50,13 @@ export function ConfirmStudentInfo({ setStatusMessage }) {
 
             setStatusMessage("Transaction submitted, waiting for confirmation...");
             await tx.wait(); // Espera a transação ser confirmada
-            setStatusMessage("Student information access request added successfully!");
+            setStatusMessage("Student information confirmation added successfully!");
+
+            setStudentAddress("");
 
         } catch (error) {
-            console.error("Error in AddStudentInformation:", error);
-            setStatusMessage("Failed to add the student's information.");
+            console.error("Error in ConfirmStudentInformation:", error);
+            setStatusMessage("Failed to confirm the student's information.");
         }
     };
 

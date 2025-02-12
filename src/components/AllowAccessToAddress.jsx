@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import { connectToContract } from "../lib/ethers";
+import { ethers } from "ethers";
 import { encrypt } from "@metamask/eth-sig-util";
 
-export function AddAllowedAddress({ setStatusMessage }) {
+export function AllowAccessToAddress({ setStatusMessage }) {
     const [allowedAddress, setAllowedAddress] = useState("");
-    const [studentAddress, setStudentAddress] = useState("");
 
-    const addAllowedAddress = async () => {
-        if (!allowedAddress || !studentAddress) {
+    const allowAccessToAddress = async () => {
+        if (!allowedAddress) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
 
         try {
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const studentAddress = await signer.getAddress();
+
             const contract = await connectToContract();
             const recipientKey = await contract.retrieveRecipientEncrpytKey(
                 allowedAddress,
@@ -34,7 +38,7 @@ export function AddAllowedAddress({ setStatusMessage }) {
             const buf = Buffer.from(
                 JSON.stringify(
                     encrypt(
-                        { publicKey: recipientKey, data: JSON.stringify(studentInformation), version: 'x25519-xsalsa20-poly1305' },
+                        { publicKey: recipientKey, data: studentInformation, version: 'x25519-xsalsa20-poly1305' },
                     )
                 ),
                 'utf8'
@@ -48,7 +52,6 @@ export function AddAllowedAddress({ setStatusMessage }) {
             setStatusMessage("Allowed address added successfully!");
 
             setAllowedAddress("");
-            setStudentAddress("");
         } catch (error) {
             console.error("Error adding allowed address:", error);
             setStatusMessage("Failed to add allowed address. Check the console for more details.");
@@ -57,7 +60,7 @@ export function AddAllowedAddress({ setStatusMessage }) {
 
     return (
         <div>
-            <h2>Add Allowed Address</h2>
+            <h2>Allow Address to access personal information</h2>
             <form className="form">
                 <input
                     type="text"
@@ -68,16 +71,7 @@ export function AddAllowedAddress({ setStatusMessage }) {
                         setStatusMessage("");
                     }}
                 />
-                <input
-                    type="text"
-                    placeholder="Student Address"
-                    value={studentAddress}
-                    onChange={(e) => {
-                        setStudentAddress(e.target.value);
-                        setStatusMessage("");
-                    }}
-                />
-                <button type="button" onClick={addAllowedAddress}>Submit</button>
+                <button type="button" onClick={allowAccessToAddress}>Submit</button>
             </form>
         </div>
     );

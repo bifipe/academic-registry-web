@@ -18,8 +18,6 @@ export function RequestAccess({ setStatusMessage }) {
             const signer = await provider.getSigner();
             const address = await signer.getAddress();
             
-            const message = "Share my public key";
-            
             const encryptionPublicKey = await window.ethereum.request({
                 "method": "eth_getEncryptionPublicKey",
                 "params": [
@@ -35,8 +33,8 @@ export function RequestAccess({ setStatusMessage }) {
             setStatusMessage("Student information access request added successfully!");
 
         } catch (error) {
-            console.error("Error in AddStudentInformation:", error);
-            setStatusMessage("Failed to add the student's information.");
+            console.error("Error in RequestAccess:", error);
+            setStatusMessage("Failed to request the student's information.");
         }
     };
 
@@ -53,7 +51,7 @@ export function RequestAccess({ setStatusMessage }) {
                         setStatusMessage("");
                     }}
                 />
-                <button type="button" onClick={requestAccess}>Add Information</button>
+                <button type="button" onClick={requestAccess}>Request Access</button>
             </form>
         </div>
     );
