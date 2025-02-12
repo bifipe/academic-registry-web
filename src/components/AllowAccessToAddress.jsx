@@ -23,7 +23,8 @@ export function AllowAccessToAddress({ setStatusMessage }) {
                 studentAddress
             );
 
-            const studentEncryptedInformation = await contract.retrieveStudentInformation(studentAddress);
+            const student = await contract.getStudent(studentAddress);
+            const studentEncryptedInformation = student.selfEncryptedInformation;
 
             const studentInformation = await window.ethereum.request({
                 "method": "eth_decrypt",
