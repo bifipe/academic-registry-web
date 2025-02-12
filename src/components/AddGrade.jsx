@@ -6,12 +6,13 @@ export function AddGrade({ setStatusMessage }) {
     const [studentAddress, setStudentAddress] = useState("");
     const [disciplineCode, setDisciplineCode] = useState("");
     const [semester, setSemester] = useState("");
+    const [year, setYear] = useState("");
     const [grade, setGrade] = useState("");
     const [attendance, setAttendance] = useState("");
     const [status, setStatus] = useState("");
 
     const addGrade = async () => {
-        if (!institutionAddress || !studentAddress || !disciplineCode || !semester || !grade || !attendance || !status) {
+        if (!institutionAddress || !studentAddress || !disciplineCode || !semester || !year || !grade || !attendance || !status) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
@@ -23,6 +24,7 @@ export function AddGrade({ setStatusMessage }) {
                 studentAddress,
                 disciplineCode,
                 semester,
+                year,
                 grade,
                 attendance,
                 JSON.parse(status)
@@ -78,6 +80,12 @@ export function AddGrade({ setStatusMessage }) {
                     placeholder="Semester"
                     value={semester}
                     onChange={(e) => setSemester(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Year"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
                 />
                 <input
                     type="text"

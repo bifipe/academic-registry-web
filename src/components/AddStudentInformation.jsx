@@ -1,25 +1,31 @@
 import React, { useState } from "react";
-import { ethers } from "ethers";
+import { ethers, hashMessage, uuidV4 } from "ethers";
 import { connectToContract } from "../lib/ethers";
 import { encrypt } from '@metamask/eth-sig-util';
 
 export function AddStudentInformation({ setStatusMessage }) {
+    const [institutionAddress, setInstitutionAddress] = useState("");
     const [name, setName] = useState("");
     const [document, setDocument] = useState("");
 
     const addStudentInformation = async () => {
 
-        if (!name || !document) {
+        if (!institutionAddress || !name || !document) {
             setStatusMessage("Please fill in all fields.");
             return;
         }
 
         try {
 
+            const salt = uuidV4();
+
             const personalInformation = {
                 name: name,
-                document: document
+                document: document,
+                salt: salt
             };
+
+            const hash = hashMessage(personalInformation);
 
             const provider = new ethers.BrowserProvider(window.ethereum);
             const signer = await provider.getSigner();
@@ -32,18 +38,22 @@ export function AddStudentInformation({ setStatusMessage }) {
                ],
             });
 
+            const contract = await connectToContract();
+            const institution = await contract.getInstitution(institutionAddress);
+
+            // Encrypt the info using the institution's public key.
             const buf = Buffer.from(
                 JSON.stringify(
                     encrypt(
-                        { publicKey: encryptionPublicKey, data: JSON.stringify(personalInformation), version: 'x25519-xsalsa20-poly1305' },
+                        { publicKey: institution.publicKey, data: JSON.stringify(personalInformation), version: 'x25519-xsalsa20-poly1305' },
                     )
                 ),
                 'utf8'
-            )
-            const encryptedValue = '0x' + buf.toString('hex');
+            );
 
-            const contract = await connectToContract();
-            const tx = await contract.addStudentInformation(encryptedValue);
+            const encryptedValue = '0x' + buf.toString('hex');
+            
+            const tx = await contract.addStudentInformation(encryptedValue, encryptionPublicKey, hash);
 
             setStatusMessage("Transaction submitted, waiting for confirmation...");
             await tx.wait(); // Espera a transação ser confirmada
@@ -59,6 +69,15 @@ export function AddStudentInformation({ setStatusMessage }) {
         <div>
             <h2>Add Student Personal Information (only usable by the student's account) </h2>
             <form className="form">
+                <input
+                    type="text"
+                    placeholder="Institution Address"
+                    value={institutionAddress}
+                    onChange={(e) => {
+                        setInstitutionAddress(e.target.value);
+                        setStatusMessage("");
+                    }}
+                />
                 <input
                     type="text"
                     placeholder="Full Name"
