@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
+import crypto from 'node:crypto';
 
 export function GetGrade({ setStatusMessage }) {
     const [queryStudentAddress, setQueryStudentAddress] = useState("");
@@ -66,7 +67,10 @@ export function GetGrade({ setStatusMessage }) {
 
             const parsedStudentInfo = JSON.parse(studentInformation);
             parsedStudentInfo.hash = studentHash;
-            
+
+            const calculatedHash = crypto.createHash('sha256').update(parsedStudentInfo.name + " - " + parsedStudentInfo.document + " - " + parsedStudentInfo.salt).digest('hex');
+            parsedStudentInfo.calculatedHash = calculatedHash;
+
             setStudentInfo(parsedStudentInfo);
 
             const gradesWithDetails = studentGrades.map((grade, index) => ({
@@ -146,7 +150,9 @@ export function GetGrade({ setStatusMessage }) {
                                     <br />
                                     Student Document: {studentInfo.document}
                                     <br />
-                                    Student Hash: {studentInfo.hash}
+                                    Student Hash (from Blockchain): {studentInfo.hash}
+                                    <br />
+                                    Student Hash (calculated): {studentInfo.calculatedHash}
                                 </td>
                             </tr>
                         </thead>
@@ -176,7 +182,7 @@ export function GetGrade({ setStatusMessage }) {
                                                 <td className="creditCount">{grade.creditCount.toString()}</td>
                                                 <td className="grade">{grade.grade.toString()}</td>
                                                 <td className="attendance">{grade.attendance.toString()}</td>
-                                                <td>{grade.status.toString()}</td>
+                                                <td>{grade.status.toString() == 'true' ? 'Approved' : 'Failed'}</td>
                                             </tr>
                                         ))}
                                     </React.Fragment>
