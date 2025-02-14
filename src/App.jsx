@@ -70,7 +70,7 @@ export function App() {
                 course: [<AddCourse key="add-course" setStatusMessage={setStatusMessage} />],
                 discipline: [<AddDiscipline key="add-discipline" setStatusMessage={setStatusMessage} />],
                 student: [<AddStudent key="add-student" setStatusMessage={setStatusMessage} />,
-                    <GetStudent key="get-student" setStatusMessage={setStatusMessage} />,
+                    // <GetStudent key="get-student" setStatusMessage={setStatusMessage} />,
                 <ConfirmStudentInfo key="confirm-student-info" setStatusMessage={setStatusMessage} />],
                 grade: [<AddGrade key="add-grade" setStatusMessage={setStatusMessage} />,
                 <AddGrades key="add-grades" setStatusMessage={setStatusMessage} />,
@@ -80,8 +80,8 @@ export function App() {
         student: {
             menu: ["student", "transcript", "permission"],
             components: {
-                student: [<AddStudentInformation key="add-student-info" setStatusMessage={setStatusMessage} />,
-                    <GetStudent key="get-student" setStatusMessage={setStatusMessage} />],
+                student: [<AddStudentInformation key="add-student-info" setStatusMessage={setStatusMessage} />],
+                    // <GetStudent key="get-student" setStatusMessage={setStatusMessage} />],
                 transcript: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
                 permission: [<AllowAccessToAddress key="allow-address" setStatusMessage={setStatusMessage} />],
             }

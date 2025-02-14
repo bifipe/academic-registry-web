@@ -4,6 +4,7 @@ import { connectToContract } from "../lib/ethers";
 
 export function AddGrades({ setStatusMessage }) {
     const [studentAddress, setStudentAddress] = useState("");
+    const [courseCode, setCourseCode] = useState("");
     const [gradesFile, setGradesFile] = useState(null);
     const fileInputRef = useRef(null);
 
@@ -18,7 +19,7 @@ export function AddGrades({ setStatusMessage }) {
     };
 
     const addGrades = async () => {
-        if (!studentAddress || !gradesFile) {
+        if (!studentAddress || !courseCode || !gradesFile) {
             setStatusMessage("Please fill in all fields and upload a JSON file.");
             return;
         }
@@ -43,6 +44,7 @@ export function AddGrades({ setStatusMessage }) {
             const tx = await contract.addGrades(
                 address,
                 studentAddress,
+                courseCode,
                 gradesData
             );
 
@@ -51,6 +53,7 @@ export function AddGrades({ setStatusMessage }) {
             setStatusMessage("Grades added successfully!");
 
             setStudentAddress("");
+            setCourseCode("");
             setGradesFile(null);
         } catch (error) {
             console.error("Error adding grades:", error);
@@ -70,6 +73,12 @@ export function AddGrades({ setStatusMessage }) {
                         setStudentAddress(e.target.value);
                         setStatusMessage("");
                     }}
+                />
+                <input
+                    type="text"
+                    placeholder="Course Code"
+                    value={courseCode}
+                    onChange={(e) => setCourseCode(e.target.value)}
                 />
                 <button
                     type="button"
