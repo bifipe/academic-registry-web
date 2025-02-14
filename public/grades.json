@@ -2,6 +2,7 @@
     {
         "disciplineCode": "GEXT7301",
         "semester": 1,
+        "year": 2024,
         "grade": 80,
         "attendance": 90,
         "status": true
@@ -9,6 +10,7 @@
     {
         "disciplineCode": "GCC1102",
         "semester": 1,
+        "year": 2024,
         "grade": 100,
         "attendance": 80,
         "status": true
@@ -16,6 +18,7 @@
     {
         "disciplineCode": "GCC1103",
         "semester": 2,
+        "year": 2024,
         "grade": 90,
         "attendance": 85,
         "status": true

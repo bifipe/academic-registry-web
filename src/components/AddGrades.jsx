@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
+import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
 
 export function AddGrades({ setStatusMessage }) {
-    const [institutionAddress, setInstitutionAddress] = useState("");
     const [studentAddress, setStudentAddress] = useState("");
+    const [courseCode, setCourseCode] = useState("");
     const [gradesFile, setGradesFile] = useState(null);
     const fileInputRef = useRef(null);
 
@@ -18,7 +19,7 @@ export function AddGrades({ setStatusMessage }) {
     };
 
     const addGrades = async () => {
-        if (!institutionAddress || !studentAddress || !gradesFile) {
+        if (!studentAddress || !courseCode || !gradesFile) {
             setStatusMessage("Please fill in all fields and upload a JSON file.");
             return;
         }
@@ -34,11 +35,16 @@ export function AddGrades({ setStatusMessage }) {
                 return;
             }
 
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+
             // Connect to the contract and call addGrades
             const contract = await connectToContract();
             const tx = await contract.addGrades(
-                institutionAddress,
+                address,
                 studentAddress,
+                courseCode,
                 gradesData
             );
 
@@ -46,8 +52,8 @@ export function AddGrades({ setStatusMessage }) {
             await tx.wait(); // Espera a transação ser confirmada
             setStatusMessage("Grades added successfully!");
 
-            setInstitutionAddress("");
             setStudentAddress("");
+            setCourseCode("");
             setGradesFile(null);
         } catch (error) {
             console.error("Error adding grades:", error);
@@ -61,21 +67,18 @@ export function AddGrades({ setStatusMessage }) {
             <form className="form">
                 <input
                     type="text"
-                    placeholder="Institution Address"
-                    value={institutionAddress}
-                    onChange={(e) => {
-                        setInstitutionAddress(e.target.value);
-                        setStatusMessage("");
-                    }}
-                />
-                <input
-                    type="text"
                     placeholder="Student Address"
                     value={studentAddress}
                     onChange={(e) => {
                         setStudentAddress(e.target.value);
                         setStatusMessage("");
                     }}
+                />
+                <input
+                    type="text"
+                    placeholder="Course Code"
+                    value={courseCode}
+                    onChange={(e) => setCourseCode(e.target.value)}
                 />
                 <button
                     type="button"

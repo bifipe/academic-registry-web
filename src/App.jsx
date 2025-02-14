@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import dappIcon from "./assets/dapp-icon.svg"
 import { AddInstitution } from "./components/AddInstitution";
+import { AddInstitutionPublicKey } from "./components/AddInstitutionPublicKey";
 import { GetInstitution } from "./components/GetInstitution";
 import { AddCourse } from "./components/AddCourse";
 import { AddDiscipline } from "./components/AddDiscipline";
 import { AddStudent } from "./components/AddStudent";
-import { EnrollStudentInDiscipline } from "./components/EnrollStudentInDiscipline";
+import { GetStudent } from "./components/GetStudentData";
 import { AddGrade } from "./components/AddGrade";
 import { GetGrade } from "./components/GetGrade";
-import { AddAllowedAddress } from "./components/AddAllowedAddress";
+import { AllowAccessToAddress } from "./components/AllowAccessToAddress";
 import { AddStudentInformation } from "./components/AddStudentInformation";
 import { Welcome } from "./components/Welcome";
 import { AddGrades } from "./components/AddGrades";
+import { RequestAccess } from "./components/RequestAccess";
+import { ConfirmStudentInfo } from "./components/ConfirmStudentInformation";
 import { connectToContract } from "./lib/ethers";
 
 export function App() {
@@ -62,11 +65,13 @@ export function App() {
         institution: {
             menu: ["institution", "course", "discipline", "student", "grade"],
             components: {
-                institution: [<GetInstitution key="get-institution" setStatusMessage={setStatusMessage} />],
+                institution: [<GetInstitution key="get-institution" setStatusMessage={setStatusMessage} />,
+                    <AddInstitutionPublicKey key="add-institution-information" setStatusMessage={setStatusMessage} />],
                 course: [<AddCourse key="add-course" setStatusMessage={setStatusMessage} />],
                 discipline: [<AddDiscipline key="add-discipline" setStatusMessage={setStatusMessage} />],
                 student: [<AddStudent key="add-student" setStatusMessage={setStatusMessage} />,
-                <EnrollStudentInDiscipline key="enroll-student" setStatusMessage={setStatusMessage} />],
+                    // <GetStudent key="get-student" setStatusMessage={setStatusMessage} />,
+                <ConfirmStudentInfo key="confirm-student-info" setStatusMessage={setStatusMessage} />],
                 grade: [<AddGrade key="add-grade" setStatusMessage={setStatusMessage} />,
                 <AddGrades key="add-grades" setStatusMessage={setStatusMessage} />,
                 <GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
@@ -76,14 +81,16 @@ export function App() {
             menu: ["student", "transcript", "permission"],
             components: {
                 student: [<AddStudentInformation key="add-student-info" setStatusMessage={setStatusMessage} />],
+                    // <GetStudent key="get-student" setStatusMessage={setStatusMessage} />],
                 transcript: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
-                permission: [<AddAllowedAddress key="add-permission" setStatusMessage={setStatusMessage} />],
+                permission: [<AllowAccessToAddress key="allow-address" setStatusMessage={setStatusMessage} />],
             }
         },
         viewer: {
             menu: ["transcript"],
             components: {
-                transcript: [<GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
+                transcript: [<RequestAccess key="request-access" setStatusMessage={setStatusMessage} />,
+                    <GetGrade key="get-grade" setStatusMessage={setStatusMessage} />],
             }
         }
     };

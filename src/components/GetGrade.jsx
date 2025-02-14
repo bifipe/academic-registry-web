@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import { connectToContract } from "../lib/ethers";
+import crypto from 'node:crypto';
 
 export function GetGrade({ setStatusMessage }) {
     const [queryStudentAddress, setQueryStudentAddress] = useState("");
@@ -16,9 +18,34 @@ export function GetGrade({ setStatusMessage }) {
         try {
             setStatusMessage("");
 
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+
             const contract = await connectToContract();
 
-            const studentEncryptedInformation = await contract.retrieveStudentInformation(queryStudentAddress);
+            const student = await contract.getStudent(queryStudentAddress);
+
+            const userPermission = await contract.getPermission();
+
+            var studentEncryptedInformation = null;
+
+            switch(userPermission) {
+                case "student":
+                    studentEncryptedInformation = student.selfEncryptedInformation;
+                    break;
+                case "institution":
+                    studentEncryptedInformation = student.institutionEncryptedInformation;
+                    break;
+                case "viewer":
+                    studentEncryptedInformation = await contract.getEncryptedInfoWithRecipientKey(address, queryStudentAddress);
+                    break;
+                default:
+                    setStatusMessage("User does not have a valid permission on the contract!");
+                    return;
+            }
+
+            const studentHash = student.publicHash;
             const [studentGrades, disciplineDetails] = await contract.getStudentTranscript(queryStudentAddress);
             const studentInstitutionData = await contract.getStudentInstitutionData(queryStudentAddress);
 
@@ -34,14 +61,17 @@ export function GetGrade({ setStatusMessage }) {
                 "method": "eth_decrypt",
                 "params": [
                     studentEncryptedInformation,
-                    queryStudentAddress
+                    address
                 ],
             });
 
             const parsedStudentInfo = JSON.parse(studentInformation);
-            const parsedData = JSON.parse(parsedStudentInfo.data);
-            
-            setStudentInfo(parsedData);
+            parsedStudentInfo.hash = studentHash;
+
+            const calculatedHash = crypto.createHash('sha256').update(parsedStudentInfo.name + " - " + parsedStudentInfo.document + " - " + parsedStudentInfo.salt).digest('hex');
+            parsedStudentInfo.calculatedHash = calculatedHash;
+
+            setStudentInfo(parsedStudentInfo);
 
             const gradesWithDetails = studentGrades.map((grade, index) => ({
                 disciplineCode: grade.disciplineCode,
@@ -49,6 +79,7 @@ export function GetGrade({ setStatusMessage }) {
                 workload: disciplineDetails[index].workload,
                 creditCount: disciplineDetails[index].creditCount,
                 semester: grade.semester,
+                year: grade.year,
                 grade: grade.grade,
                 attendance: grade.attendance,
                 status: grade.status,
@@ -115,9 +146,13 @@ export function GetGrade({ setStatusMessage }) {
                         <thead className="student-info">
                             <tr>
                                 <td colSpan={7}>
-                                    <strong>{studentInfo.name}</strong>
+                                    <strong>Student Name: {studentInfo.name}</strong>
                                     <br />
-                                    {studentInfo.document}
+                                    Student Document: {studentInfo.document}
+                                    <br />
+                                    Student Hash (from Blockchain): {studentInfo.hash}
+                                    <br />
+                                    Student Hash (calculated): {studentInfo.calculatedHash}
                                 </td>
                             </tr>
                         </thead>
@@ -147,7 +182,7 @@ export function GetGrade({ setStatusMessage }) {
                                                 <td className="creditCount">{grade.creditCount.toString()}</td>
                                                 <td className="grade">{grade.grade.toString()}</td>
                                                 <td className="attendance">{grade.attendance.toString()}</td>
-                                                <td>{grade.status.toString()}</td>
+                                                <td>{grade.status.toString() == 'true' ? 'Approved' : 'Failed'}</td>
                                             </tr>
                                         ))}
                                     </React.Fragment>
